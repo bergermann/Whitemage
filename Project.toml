@@ -1,0 +1,16 @@
+name = "Whitemage"
+uuid = "bd095f1d-a1b1-40e4-9a44-2593ee0fd589"
+version = "0.1.0"
+authors = ["Dominik Bergermann <dominik.bergermann@rwth-aachen.de>"]
+
+[deps]
+Blackmage = "94fbf62c-7f84-4dac-b8e8-d17b7072c94a"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Oxygen = "df9a0d86-3283-4920-82dc-4555fc0d1d8b"
+
+[compat]
+Blackmage = "0.1.0"
+HTTP = "1.11.0"
+JSON = "1.6.1"
+Oxygen = "1.10.2"
