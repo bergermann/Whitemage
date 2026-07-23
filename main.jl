@@ -1,0 +1,6 @@
+
+using Whitemage
+
+main()
+
+
