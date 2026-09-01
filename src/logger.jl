@@ -5,11 +5,17 @@ function startLogger!(md::MultiDevice; interval::Real=1.)
 
     @info "Starting logger."
     
-    if getMeasurementEnabled()
+    if Blackmage.getMeasurementEnabled(md,md.req)
+        updateLog_(md); sleep(interval)
+
         Threads.@spawn begin
             runLogger!(md,interval)
         end
+    else
+        @info "IDS measurement not enabled."; stopLogger!(md)
     end
+
+    return
 end
 
 function runLogger!(md::MultiDevice,interval::Real=1.)
@@ -32,8 +38,4 @@ function stopLogger!(md::MultiDevice)
     md.logger.active = false
 
     return
-end
-
-function stopLogger!(md::MultiDevice)
-    md.logger.active = false; return
 end

@@ -19,3 +19,6 @@ position_file = "positions.txt"
     [devices.3]
         mc  = "192.168.2.3"
         ids = "192.168.3.3"
+
+[precision]
+do_precision = true

@@ -1,7 +1,7 @@
 
 module Whitemage
 
-using Oxygen, HTTP, JSON, TOML, Blackmage
+using Oxygen, HTTP, JSON, TOML, Blackmage, DelimitedFiles
 
 include("logger.jl")
 include("server.jl")
@@ -11,18 +11,17 @@ function main(; config="config.toml")
 
     timeout_av = Real(get(cfg,"timeout_available",600))
 
-    idx, positions = loadPositions(get(cfg,"positions",""))
+    md::MultiDevice = MultiDevice(); # addMockLog_(md)
+    startLogger!(md)
+
+    idx::Base.RefValue{Int64}, positions::Matrix{Float64} = loadPositions(get(cfg,"positions",""))
+
+    target::Vector{Float64} = zeros(Float64,length(logger))
 
 
-
-
-    md = MultiDevice()
-
-    active = true
-    new_target = false
-    interrupt = false
-
-    addMockLog_(md)
+    active::Bool = true
+    new_target::Base.RefValue{Bool} = false
+    interrupt::Base.RefValue{Bool} = false
 
     Threads.@spawn begin
         while active
@@ -31,9 +30,11 @@ function main(; config="config.toml")
 
                 waitForAvailable(md; timeout=timeout_av)
 
+                sleep(1)
+                
                 mcTarget(md,target)
 
-                new_target = false
+                new_target[] = false; interrupt[] = false
             end
         end
     end
@@ -63,12 +64,12 @@ function loadPositions(file)
     if !isfile(file); @warn "No such file: $file. No positions loaded!"; return -1, zeros(0,0); end
 
     try
-        positions = readdlm(file,' ',Float64,'\n'; comments=true,skipblanks=true)
-        return 0, positions
+        positions = collect(transpose(readdlm(file,' ',Float64,'\n'; comments=true,skipblanks=true)))
+        return Ref(0), positions
     catch e
         @warn "Invalid data format. No positions loaded!"
 
-        return -1, zeros(0,0)
+        return Ref(-1), zeros(0,0)
     end
 end
 
