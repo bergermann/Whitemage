@@ -1,7 +1,9 @@
+
 module Whitemage
 
 using Oxygen, HTTP, JSON, TOML, Blackmage
 
+include("logger.jl")
 include("server.jl")
 
 function main(; config="config.toml")
