@@ -1,0 +1,21 @@
+
+
+[general]
+timeout_available = 600 # in seconds
+position_file = "positions.txt"
+
+[devices]
+    mc_port = 2000
+    ids_port = 9090
+
+    [devices.1]
+        mc  = "192.168.2.1"
+        ids = "192.168.3.1"
+
+    [devices.2]
+        mc  = "192.168.2.2"
+        ids = "192.168.3.2"
+
+    [devices.3]
+        mc  = "192.168.2.3"
+        ids = "192.168.3.3"

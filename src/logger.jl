@@ -19,3 +19,7 @@ function runLogger!(md::MultiDevice)
 
     return
 end
+
+function stopLogger!(md::MultiDevice)
+    md.logger.active = false; return
+end

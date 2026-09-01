@@ -1,6 +1,6 @@
 
 
-@get "/ping" function(req::HTTP.Request)::String
+@get "/ping" function(req::HTTP.Request)
     return "pong"
 end
 
@@ -15,5 +15,17 @@ end
 end
 
 @get "/rpos/{i}" function(req::HTTP.Request,i::Int)
-    return JSON.json(md.logger.rpos[i])
+    return json(md.logger.rpos[i])
+end
+
+@get "/goto/{i}" function(req::HTTP.Request,i::Int)
+    newtarget = true
+
+    return 
+end
+
+@get "/goto_i/{i}" function(req::HTTP.Request,i::Int)
+    
+
+    return 
 end
