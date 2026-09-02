@@ -15,9 +15,13 @@ function main(; config="config.toml")
     startLogger!(md)
 
     idx::Base.RefValue{Int64}, positions::Matrix{Float64} = loadPositions(get(cfg,"positions",""))
-
     target::Vector{Float64} = zeros(Float64,length(logger))
 
+    if idx[] >= 0
+        @info size(positions,1) == length(target) "Loaded positions don't match number of discs. Discarding positions."
+        
+        idx[] = -1; positions = zeros(0,0)
+    end
 
     active::Bool = true
     new_target::Base.RefValue{Bool} = false
