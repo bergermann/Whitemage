@@ -22,16 +22,17 @@ position_file = "positions.txt"
     [devices.1]
         mc  = "192.168.2.1"
         ids = "192.168.3.1"
-
-        alpha = 
+        alpha = 0.
 
     [devices.2]
         mc  = "192.168.2.2"
         ids = "192.168.3.2"
+        alpha = 0.
 
     [devices.3]
         mc  = "192.168.2.3"
         ids = "192.168.3.3"
+        alpha = 0.
 
 [precision]
 do_precision = false
