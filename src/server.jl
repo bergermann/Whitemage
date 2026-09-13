@@ -22,6 +22,22 @@ end
 
 
 
+@get "/interrupt" function(req::HTTP.Request)
+    interrupt[] = true
+
+    return "Interrupting."
+end
+
+
+
+@get "/load_config/{config}" function(req::HTTP.Request,config::String)
+    
+
+    return "Loading config $config."
+end
+
+
+
 @get "/goto/{i}" function(req::HTTP.Request,i::Int)
     setNewTarget!(target,positions,i)
     

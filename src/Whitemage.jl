@@ -3,45 +3,26 @@ module Whitemage
 
 using Oxygen, HTTP, JSON, TOML, Blackmage, DelimitedFiles
 
+include("controller.jl")
+
 include("logger.jl")
 include("server.jl")
 
 function main(; config="config.toml")
-    cfg = TOML.parse(open(config)); display(cfg)
+    @assert Threads.nthreads >= 4 "At least 4 threads required for "
 
-    timeout_av = Real(get(cfg,"timeout_available",600))
-
+    ctrl::Controller = Controller(config)
     md::MultiDevice = MultiDevice(); # addMockLog_(md)
+
+    confirmPositions!(md,ctrl)
+    
     startLogger!(md)
+    startTargeter!(md,ctrl)
 
-    idx::Base.RefValue{Int64}, positions::Matrix{Float64} = loadPositions(get(cfg,"positions",""))
-    target::Vector{Float64} = zeros(Float64,length(logger))
 
-    if idx[] >= 0
-        @info size(positions,1) == length(target) "Loaded positions don't match number of discs. Discarding positions."
-        
-        idx[] = -1; positions = zeros(0,0)
-    end
 
-    active::Bool = true
-    new_target::Base.RefValue{Bool} = false
-    interrupt::Base.RefValue{Bool} = false
 
-    Threads.@spawn begin
-        while active
-            if new_target
-                if interrupt; md.interrupt = true; end
 
-                waitForAvailable(md; timeout=timeout_av)
-
-                sleep(1)
-                
-                mcTarget(md,target)
-
-                new_target[] = false; interrupt[] = false
-            end
-        end
-    end
 
     s = serve(; host="127.0.0.1",port=2000,async=true)
     # HTTP.get("http://127.0.0.1:2000/rpos/1")
@@ -54,6 +35,8 @@ function waitForAvailable(md::MultiDevice; interval::Real=0.1,timeout::Real=600)
     @assert timeout > 0 ""
     @assert interval < timeout ""
 
+    waitForTarget()
+
     t0 = now(); timeout = Second(Real)
     while md.moving
         sleep(interval)
@@ -64,18 +47,6 @@ function waitForAvailable(md::MultiDevice; interval::Real=0.1,timeout::Real=600)
     return
 end
 
-function loadPositions(file)
-    if !isfile(file); @warn "No such file: $file. No positions loaded!"; return -1, zeros(0,0); end
-
-    try
-        positions = collect(transpose(readdlm(file,' ',Float64,'\n'; comments=true,skipblanks=true)))
-        return Ref(0), positions
-    catch e
-        @warn "Invalid data format. No positions loaded!"
-
-        return Ref(-1), zeros(0,0)
-    end
-end
 
 
 
