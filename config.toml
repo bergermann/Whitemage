@@ -1,7 +1,11 @@
 
 [general]
-timeout_available = 600 # in seconds
 positions_file = "positions.txt"
+
+server_port = 2001
+logger_interval = 1.0
+
+timeout_move = 600.0 # in seconds
 
 [precision]
 do_precision = false
@@ -11,7 +15,7 @@ correctess = false # use with care!
 doublepass = true
 
 [devices.general]
-    connect_timeout = 10
+    timeout_connect = 10.0
 
     mc_port = 2000
     ids_port = 9090

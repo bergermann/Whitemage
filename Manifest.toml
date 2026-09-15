@@ -19,7 +19,7 @@ version = "0.1.10"
 
 [[deps.Blackmage]]
 deps = ["Dates", "JSON", "Sockets"]
-git-tree-sha1 = "e7f954bad98a55cf45c784012482073ef22efca3"
+git-tree-sha1 = "adfd1b607725bd2e15f6b999747fd2dae14cf6ae"
 repo-rev = "main"
 repo-url = "https://github.com/bergermann/Blackmage"
 uuid = "94fbf62c-7f84-4dac-b8e8-d17b7072c94a"
@@ -336,7 +336,7 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 version = "1.11.0"
 
 [[deps.Whitemage]]
-deps = ["Blackmage", "HTTP", "JSON", "Oxygen", "TOML"]
+deps = ["Blackmage", "DelimitedFiles", "HTTP", "JSON", "Oxygen", "TOML"]
 path = "."
 uuid = "bd095f1d-a1b1-40e4-9a44-2593ee0fd589"
 version = "0.1.0"

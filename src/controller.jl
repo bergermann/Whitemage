@@ -3,36 +3,42 @@ mutable struct Config
     path::String
     positions_file::String
 
-    timeout_av::Float64
+    server_port::Int
+    logger_interval::Float64
 
-    # general::Dict
-    precision::Dict
-    devices_general::Dict
-    devices::Dict
+    timeout_move::Float64
+
+    precision::Dict{Symbol,Any}
+    devices_general::Dict{Symbol,Any}
+    devices::Dict{Int,Dict{Symbol,Any}}
 
     function Config(config::String)
         cfg = TOML.parse(open(config))
 
-        # general = get(cfg,"general",Dict{String,Any}())
+        general = get(cfg,"general",Dict{String,Any}())
         precision = get(cfg,"precision",Dict{String,Any}())
         devices = get(cfg,"devices",Dict{String,Any}())
+        devices_general = get(devices,"general",Dict{String,Any}())
 
         devices_ = Dict{Int,Dict}()
         for (key,value) in devices
             if key == "general"; continue; end
-            devices_[parse(Int,key)] = value
+            devices_[parse(Int,key)] = Dict(Symbol(replace(k,"alpha"=>"α")) => v
+                                                                        for (k,v) in value)
         end
 
         new(
             config,
-            string(get(cfg,"positions_file","positions.txt")),
+            string(get(general,"positions_file","positions.txt")),
 
-            Float64(get(general,"timeout_wait",600.)),
+            Int(get(general,"server_port",2001)),
+            Float64(get(general,"logger_interval",1.)),
 
-            # cfg[general],
-            cfg[precision],
-            get(devices,"general",Dict{String,Any}),
-            cfg[devices]["general"],
+            Float64(get(general,"timeout_move",600.)),
+
+            Dict(Symbol(key) => value for (key,value) in precision),
+            Dict(Symbol(key) => value for (key,value) in devices_general),
+            devices_,
         )
     end
 end
@@ -46,11 +52,9 @@ mutable struct Controller
     positions::Matrix{Float64}
     target::Vector{Float64}
 
-    targeter::Bool = true
-    listener::Bool = true
+    targeter::Bool
 
-    new_target::Bool = false
-    interrupt::Bool = false
+    new_target::Bool
 
     function Controller(config::String)
         config = Config(config)
@@ -65,13 +69,13 @@ mutable struct Controller
             zeros(Float64,length(md)),
 
             false,
-            false,
 
             false,
-            false
         )
     end
 end
+
+
 
 function loadPositions(file)
     if !isfile(file); @warn "No such file: $file. No positions loaded!"; return -1, zeros(0,0); end
@@ -105,6 +109,33 @@ function confirmPositions!(md::MultiDevice,ctrl::Controller)
             ctrl.idx = -1; ctrl.positions = zeros(0,0)
         else
             @info "Valid positions loaded, $(size(ctrl.positions,2)) available."
+        end
+    end
+
+    return
+end
+
+function getIPs(cfg::Config,type::Symbol)
+    return [cfg.devices[i][type] for i in sort!(collect(keys(cfg.devices)))]
+end
+
+function applyDeviceSettings!(md::MultiDevice,cfg::Config)
+    for i in eachindex(md)
+        cfg_ = cfg.devices[i]
+        cfg__ = cfg.devices_general
+
+        if !haskey(cfg.devices,i); @warn "No config found for device $i."; continue; end
+
+        ds = md[i].settings
+
+        for p in propertynames(ds)
+            if haskey(cfg_,p)
+
+            elseif haskey(cfg__,p)
+
+            else
+
+            end
         end
     end
 

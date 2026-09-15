@@ -19,7 +19,7 @@ function runTargeter(md::MultiDevice,ctrl::Controller)
 
             sleep(1)
             
-            md.interrupt = false
+            md.interrupt[] = false
         end
     end
 
@@ -29,7 +29,7 @@ end
 function stopTargeter!(md::MultiDevice)
     @info "Stopping logger."
     
-    md.targeter.active = false
+    ctrl.targeter = false
 
     return
 end
