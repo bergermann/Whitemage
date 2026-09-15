@@ -1,38 +1,7 @@
 
-
 [general]
 timeout_available = 600 # in seconds
 positions_file = "positions.txt"
-
-[devices]
-    mc_port = 2000
-    ids_port = 9090
-
-    master = 1
-    ess = [15e-6,15e-6,15e-6]
-    mrss = [10,10,10]
-    freq = [50,70] # [master,slave]
-    temp = 300
-    flextol = 300
-    flexdist = 5000
-    df = 1.0
-    
-    r = 0.15
-
-    [devices.1]
-        mc  = "192.168.2.1"
-        ids = "192.168.3.1"
-        alpha = 0.0
-
-    [devices.2]
-        mc  = "192.168.2.2"
-        ids = "192.168.3.2"
-        alpha = 0.0
-
-    [devices.3]
-        mc  = "192.168.2.3"
-        ids = "192.168.3.3"
-        alpha = 0.0
 
 [precision]
 do_precision = false
@@ -40,3 +9,46 @@ maxsteps = 10
 maxiter = 10
 correctess = false # use with care!
 doublepass = true
+
+[devices.general]
+    connect_timeout = 10
+
+    mc_port = 2000
+    ids_port = 9090
+
+    temp = 300
+    flextol = 300
+    flexdist = 5000
+    df = 1.0
+
+    r = 0.15
+
+[devices.1]
+    mc  = "192.168.2.1"
+    ids = "192.168.3.1"
+    
+    master = 1
+    ess = [15e-6,15e-6,15e-6]
+    mrss = [10,10,10]
+    freq = [50,70] # [master,slave]
+    alpha = 0.0
+
+[devices.2]
+    mc  = "192.168.2.2"
+    ids = "192.168.3.2"
+    
+    master = 1
+    ess = [15e-6,15e-6,15e-6]
+    mrss = [10,10,10]
+    freq = [50,70] # [master,slave]
+    alpha = 0.0
+
+[devices.3]
+    mc  = "192.168.2.3"
+    ids = "192.168.3.3"
+    
+    master = 1
+    ess = [15e-6,15e-6,15e-6]
+    mrss = [10,10,10]
+    freq = [50,70] # [master,slave]
+    alpha = 0.0

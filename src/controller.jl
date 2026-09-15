@@ -5,22 +5,34 @@ mutable struct Config
 
     timeout_av::Float64
 
-    devices::Dict
-    general::Dict
+    # general::Dict
     precision::Dict
+    devices_general::Dict
+    devices::Dict
 
     function Config(config::String)
         cfg = TOML.parse(open(config))
 
+        # general = get(cfg,"general",Dict{String,Any}())
+        precision = get(cfg,"precision",Dict{String,Any}())
+        devices = get(cfg,"devices",Dict{String,Any}())
+
+        devices_ = Dict{Int,Dict}()
+        for (key,value) in devices
+            if key == "general"; continue; end
+            devices_[parse(Int,key)] = value
+        end
+
         new(
             config,
-            get(cfg,"positions_file",""),
+            string(get(cfg,"positions_file","positions.txt")),
 
-            Float64(get(cfg,"timeout_available",600.)),
+            Float64(get(general,"timeout_wait",600.)),
 
-            cfg[devices],
-            cfg[general],
+            # cfg[general],
             cfg[precision],
+            get(devices,"general",Dict{String,Any}),
+            cfg[devices]["general"],
         )
     end
 end

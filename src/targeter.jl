@@ -15,12 +15,11 @@ function runTargeter(md::MultiDevice,ctrl::Controller)
             ctrl.new_target = false
             
             mcTarget(md,target)
-            waitForTarget(md)
+            mcWait(md)
 
             sleep(1)
             
-
-            new_target = false; interrupt = false
+            md.interrupt = false
         end
     end
 
@@ -30,7 +29,7 @@ end
 function stopTargeter!(md::MultiDevice)
     @info "Stopping logger."
     
-    md.logger.active = false
+    md.targeter.active = false
 
     return
 end
