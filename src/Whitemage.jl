@@ -19,17 +19,30 @@ function main(; config="config.toml")
          timeout=ctrl.config.devices_general[:timeout_connect])
     
     applySettings!(md,ctrl.cfg)
-        
+    confirmPositions!(md,ctrl)
+
     # addMockLog_(md)
 
-    confirmPositions!(md,ctrl)
-    
+    initMD!(md)
+      
     startLogger!(md; interval=ctrl.config.logger_interval)
     startTargeter!(md,ctrl)
 
-    server = serve(; host="127.0.0.1",port=2000,async=true)
+    server = serve(; host="127.0.0.1",port=ctrl.config.server_port,async=true)
 
     return md, ctrl, server
+end
+
+function initMD!(md::MultiDevice; rezero::Bool=false)
+    if !getMeasurementEnabled(md)
+        startMeasurement(md)
+    end
+
+    # if rezero; mcZero(md); end
+
+    resetAxes(md)
+
+    return
 end
 
 end # module Whitemage
