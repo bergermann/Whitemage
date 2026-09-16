@@ -138,7 +138,7 @@ function applyPrecisionSettings!(md::MultiDevice,cfg::Config)
 
     cfg_ = cfg.precision
     ps = md.settings.psettings
-    ps_ = Union{Bool,Int64}[]
+    ps_ = Integer[]
 
     for p in propertynames(ps)
         try 
@@ -153,7 +153,7 @@ function applyPrecisionSettings!(md::MultiDevice,cfg::Config)
                     $(typeof(ps[p])). Using default value $(ps[p])."
                 push!(ps_,ps[p])
             else
-                @error "Unexpected error while reading precision settings. Check config inputs."
+                @error "Unexpected error while reading precision setting :$p. Check config inputs."
                 rethrow(e)
             end
         end
@@ -181,7 +181,7 @@ function applyDeviceSettings!(md::MultiDevice,cfg::Config)
                         @info "Could not convert config :$p to the proper type
                         $(fieldtype(ds,p)). Using default value $(getfield(ds,p))."
                     else
-                        @error "Unexpected error while reading device settings. Check config inputs."
+                        @error "Unexpected error while reading device setting :$p. Check config inputs."
                         rethrow(e)
                     end
                 end
@@ -193,7 +193,7 @@ function applyDeviceSettings!(md::MultiDevice,cfg::Config)
                         @info "Could not convert config :$p to the proper type
                         $(fieldtype(ds,p)). Using default value $(getfield(ds,p))."
                     else
-                        @error "Unexpected error while reading device settings. Check config inputs."
+                        @error "Unexpected error while reading device setting :$p. Check config inputs."
                         rethrow(e)
                     end
                 end
