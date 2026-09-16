@@ -100,6 +100,8 @@ function loadPositions!(md::MultiDevice,ctrl::Controller,file::String=ctrl.confi
 end
 
 function confirmPositions!(md::MultiDevice,ctrl::Controller)
+    if length(ctrl.target) != length(md); ctrl.target = zeros(Float64,length(md)); end
+
     if ctrl.idx >= 0
         if size(ctrl.positions,1) != length(md)
             @info "Loaded positions don't match number of discs. Discarding positions."
