@@ -17,6 +17,8 @@ function main(; config="config.toml")
          mc_port=ctrl.config.devices_general[:mc_port],
         ids_port=ctrl.config.devices_general[:ids_port],
          timeout=ctrl.config.devices_general[:timeout_connect])
+    
+    applySettings!(md,ctrl.cfg)
         
     # addMockLog_(md)
 

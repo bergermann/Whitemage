@@ -15,9 +15,8 @@ function runTargeter(md::MultiDevice,ctrl::Controller)
             ctrl.new_target = false
             
             mcTarget(md,target)
-            mcWait(md)
-
-            sleep(1)
+            mcWait(md); sleep(1)
+            mcTargetP(md); sleep(1)
             
             md.interrupt[] = false
         end

@@ -7,14 +7,16 @@ logger_interval = 1.0
 
 timeout_move = 600.0 # in seconds
 
+# if setting not specified, falls back to the defaults given in blackmage
 [precision]
-do_precision = false
+doprecision = false
 maxsteps = 10
 maxiter = 10
 correctess = false # use with care!
 doublepass = true
 
-# individual disc settings take precedence, use global disc setting if none specified individually
+# individual disc settings take precedence
+# use global disc setting if none specified individually
 [devices.general]
     timeout_connect = 10.0
 

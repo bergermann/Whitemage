@@ -53,7 +53,6 @@ mutable struct Controller
     target::Vector{Float64}
 
     targeter::Bool
-
     new_target::Bool
 
     function Controller(config::String)
@@ -66,10 +65,9 @@ mutable struct Controller
 
             -1,
             zeros(Float64,0,0),
-            zeros(Float64,length(md)),
+            zeros(Float64,size(positions,1)),
 
             false,
-
             false,
         )
     end
@@ -115,26 +113,93 @@ function confirmPositions!(md::MultiDevice,ctrl::Controller)
     return
 end
 
+
+
 function getIPs(cfg::Config,type::Symbol)
     return [cfg.devices[i][type] for i in sort!(collect(keys(cfg.devices)))]
 end
 
+
+
+function applySettings!(md::MultiDevice,cfg::Config)
+    applyPrecisionSettings!(md,cfg)
+    applyDeviceSettings!(md,cfg)
+
+    return
+end
+
+function applyPrecisionSettings!(md::MultiDevice,cfg::Config)
+    if haskey(cfg.precision,:doprecision)
+        md.settings.doprecision = cfg.precision[:doprecision]
+    else
+        @info "No config found wether to do precision correction.
+            Using default of $(md.settings.doprecision)"
+    end
+
+    cfg_ = cfg.precision
+    ps = md.settings.psettings
+    ps_ = Union{Bool,Int64}[]
+
+    for p in propertynames(ps)
+        try 
+            p_ = convert(typeof(ps[p]),cfg_[p])
+            push!(ps_,p_)
+        catch e
+            if e isa KeyError
+                @info "No config found for precision setting :$p. Using default value $(ps[p])."
+                push!(ps_,ps[p])
+            elseif e isa MethodError
+                @info "Could not convert config for precision setting :$p to the proper type
+                    $(typeof(ps[p])). Using default value $(ps[p])."
+                push!(ps_,ps[p])
+            else
+                @error "Unexpected error while reading precision settings. Check config inputs."
+                rethrow(e)
+            end
+        end
+    end
+
+    md.settings.psettings = NamedTuple{propertynames(ps)}(ps_)
+
+    return
+end
+
 function applyDeviceSettings!(md::MultiDevice,cfg::Config)
     for i in eachindex(md)
+        if !haskey(cfg.devices,i); @warn "No config found for device $i."; continue; end
+        
+        ds = md[i].settings
         cfg_ = cfg.devices[i]
         cfg__ = cfg.devices_general
 
-        if !haskey(cfg.devices,i); @warn "No config found for device $i."; continue; end
-
-        ds = md[i].settings
-
         for p in propertynames(ds)
             if haskey(cfg_,p)
-                setfield!(ds,p,cfg_[p])
+                try 
+                    setfield!(ds,p,convert(fieldtype(ds,p),cfg_[p]))
+                catch e
+                    if e isa MethodError
+                        @info "Could not convert config :$p to the proper type
+                        $(fieldtype(ds,p)). Using default value $(getfield(ds,p))."
+                    else
+                        @error "Unexpected error while reading device settings. Check config inputs."
+                        rethrow(e)
+                    end
+                end
             elseif haskey(cfg__,p)
-                setfield!(ds,p,cfg__[p])
+                try
+                    setfield!(ds,p,cfg__[p])
+                catch e
+                    if e isa MethodError
+                        @info "Could not convert config :$p to the proper type
+                        $(fieldtype(ds,p)). Using default value $(getfield(ds,p))."
+                    else
+                        @error "Unexpected error while reading device settings. Check config inputs."
+                        rethrow(e)
+                    end
+                end
             else
-                @info "No config found for property :$p of device $i."
+                @info "No config found for property :$p of device $i. Using default value
+                    $(getfield(ds,p))."
             end
         end
     end
