@@ -14,27 +14,29 @@ maxiter = 10
 correctess = false # use with care!
 doublepass = true
 
+# individual disc settings take precedence, use global disc setting if none specified individually
 [devices.general]
     timeout_connect = 10.0
 
     mc_port = 2000
     ids_port = 9090
 
+    # global disc settings
     temp = 300
     flextol = 300
     flexdist = 5000
     df = 1.0
+    mrss = [10,10,10]
+    freq = [50,70] # [master,slave]
 
     r = 0.15
 
-[devices.1]
+[devices.1] # individual disc settings
     mc  = "192.168.2.1"
     ids = "192.168.3.1"
     
     master = 1
     ess = [15e-6,15e-6,15e-6]
-    mrss = [10,10,10]
-    freq = [50,70] # [master,slave]
     alpha = 0.0
 
 [devices.2]
@@ -43,8 +45,6 @@ doublepass = true
     
     master = 1
     ess = [15e-6,15e-6,15e-6]
-    mrss = [10,10,10]
-    freq = [50,70] # [master,slave]
     alpha = 0.0
 
 [devices.3]
@@ -53,6 +53,4 @@ doublepass = true
     
     master = 1
     ess = [15e-6,15e-6,15e-6]
-    mrss = [10,10,10]
-    freq = [50,70] # [master,slave]
     alpha = 0.0

@@ -130,11 +130,11 @@ function applyDeviceSettings!(md::MultiDevice,cfg::Config)
 
         for p in propertynames(ds)
             if haskey(cfg_,p)
-
+                setfield!(ds,p,cfg_[p])
             elseif haskey(cfg__,p)
-
+                setfield!(ds,p,cfg__[p])
             else
-
+                @info "No config found for property :$p of device $i."
             end
         end
     end
