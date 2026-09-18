@@ -1,5 +1,5 @@
 
-import Base: convert; Base.convert(Tuple,a::Vector) = Tuple(a)
+# import Base: convert; Base.convert(Tuple,a::Vector) = Tuple(a)
 
 mutable struct Config
     path::String
@@ -19,14 +19,18 @@ mutable struct Config
 
         general = get(cfg,"general",Dict{String,Any}())
         precision = get(cfg,"precision",Dict{String,Any}())
+        
         devices = get(cfg,"devices",Dict{String,Any}())
-        devices_general = get(devices,"general",Dict{String,Any}())
-
         devices_ = Dict{Int,Dict}()
         for (key,value) in devices
             if key == "general"; continue; end
-            devices_[parse(Int,key)] = Dict(Symbol(replace(k,"alpha"=>"α")) => v
-                                                                        for (k,v) in value)
+            devices_[parse(Int,key)] = Dict(Symbol(replace(k,"alpha"=>"α")) =>
+                v isa Vector ? Tuple(v) : v for (k,v) in value)
+        end
+
+        devices_general = get(devices,"general",Dict{String,Any}())
+        for (key,value) in devices_general
+            if value isa Vector; devices_general[key] = Tuple(value); end
         end
 
         new(
@@ -132,6 +136,8 @@ function applySettings!(md::MultiDevice,cfg::Config)
     return
 end
 
+applySettings!(md::MultiDevice,ctrl::Controller) = applySettings!(md,ctrl.config)
+
 function applyPrecisionSettings!(md::MultiDevice,cfg::Config)
     if haskey(cfg.precision,:doprecision)
         md.settings.doprecision = cfg.precision[:doprecision]
@@ -183,7 +189,7 @@ function applyDeviceSettings!(md::MultiDevice,cfg::Config)
                 catch e
                     if e isa MethodError
                         @info "Could not convert config :$p to the proper type
-                        $(fieldtype(ds,p)). Using default value $(getfield(ds,p))."
+                        $(fieldtype(typeof(ds),p)). Using default value $(getfield(ds,p))."
                     else
                         @error "Unexpected error while reading device setting :$p. Check config inputs."
                         rethrow(e)
@@ -191,11 +197,11 @@ function applyDeviceSettings!(md::MultiDevice,cfg::Config)
                 end
             elseif haskey(cfg__,p)
                 try
-                    setfield!(ds,p,cfg__[p])
+                    setfield!(ds,p,convert(fieldtype(typeof(ds),p),cfg__[p]))
                 catch e
                     if e isa MethodError
                         @info "Could not convert config :$p to the proper type
-                        $(fieldtype(ds,p)). Using default value $(getfield(ds,p))."
+                        $(fieldtype(typeof(ds),p)). Using default value $(getfield(ds,p))."
                     else
                         @error "Unexpected error while reading device setting :$p. Check config inputs."
                         rethrow(e)
@@ -207,6 +213,24 @@ function applyDeviceSettings!(md::MultiDevice,cfg::Config)
             end
         end
     end
+
+    return
+end
+
+
+
+# function updateConfig!(cfg::Config)
+    
+
+#     return
+# end
+
+# updateConfig!(ctrl::Controller) = updateConfig!(ctrl.config)
+updateConfig!(ctrl::Controller,config::String) = setfield!(ctrl,:config,Config(config)) 
+
+function updateConfig!(md::MultiDevice,ctrl::Controller,config::String)
+    updateConfig!(ctrl,config)
+    applySettings!(md,ctrl)
 
     return
 end

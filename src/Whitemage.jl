@@ -18,7 +18,7 @@ function main(; config="config.toml")
         ids_port=ctrl.config.devices_general[:ids_port],
          timeout=ctrl.config.devices_general[:timeout_connect])
     
-    applySettings!(md,ctrl.config)
+    applySettings!(md,ctrl)
     confirmPositions!(md,ctrl)
 
     # addMockLog_(md)
