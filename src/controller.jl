@@ -9,6 +9,7 @@ mutable struct Config
     logger_interval::Float64
 
     timeout_move::Float64
+    rezero::Bool
 
     precision::Dict{Symbol,Any}
     devices_general::Dict{Symbol,Any}
@@ -41,6 +42,7 @@ mutable struct Config
             Float64(get(general,"logger_interval",1.)),
 
             Float64(get(general,"timeout_move",600.)),
+            Bool(get(general,"rezero",false)),
 
             Dict(Symbol(key) => value for (key,value) in precision),
             Dict(Symbol(key) => value for (key,value) in devices_general),

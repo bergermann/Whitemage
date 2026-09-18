@@ -6,6 +6,7 @@ server_port = 2001                      # port for motor control server
 logger_interval = 1.0                   # interval for updating IDS data to logger
 
 timeout_move = 600.0 # seconds          # timeout for motors to reach their targets [NYI]
+rezero = false                          # wether to rezero devices on boot. use with care
 
 # if a setting not specified, falls back to the defaults given in blackmage
 [precision]                             # precision correction settings
