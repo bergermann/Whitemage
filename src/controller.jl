@@ -1,4 +1,6 @@
 
+import Base: convert; Base.convert(Tuple,a::Vector) = Tuple(a)
+
 mutable struct Config
     path::String
     positions_file::String
@@ -177,7 +179,7 @@ function applyDeviceSettings!(md::MultiDevice,cfg::Config)
         for p in propertynames(ds)
             if haskey(cfg_,p)
                 try 
-                    setfield!(ds,p,convert(fieldtype(ds,p),cfg_[p]))
+                    setfield!(ds,p,convert(fieldtype(typeof(ds),p),cfg_[p]))
                 catch e
                     if e isa MethodError
                         @info "Could not convert config :$p to the proper type

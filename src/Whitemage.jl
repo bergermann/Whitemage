@@ -18,8 +18,8 @@ function main(; config="config.toml")
         ids_port=ctrl.config.devices_general[:ids_port],
          timeout=ctrl.config.devices_general[:timeout_connect])
     
-    # applySettings!(md,ctrl.cfg)
-    # confirmPositions!(md,ctrl)
+    applySettings!(md,ctrl.config)
+    confirmPositions!(md,ctrl)
 
     # addMockLog_(md)
 
@@ -39,9 +39,10 @@ function initMD!(md::MultiDevice; rezero::Bool=false)
         startMeasurement(md)
     end
 
-    # if rezero; mcZero(md); end
-
-    resetAxes(md)
+    # if rezero
+    #     mcZero(md)
+    #     resetAxes(md)
+    # end
 
     return
 end
