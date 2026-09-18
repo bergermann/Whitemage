@@ -23,7 +23,7 @@ function main(; config="config.toml")
 
     # addMockLog_(md)
 
-    # initMD!(md)
+    # initMD!(md; rezero=ctrl.config.rezero)
       
     # startLogger!(md; interval=ctrl.config.logger_interval)
     # startTargeter!(md,ctrl)
