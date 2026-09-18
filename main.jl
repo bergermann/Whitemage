@@ -1,6 +1,6 @@
 
 using Whitemage
 
-main()
+md, ctrl = main(; config="config_test.toml")
 
 

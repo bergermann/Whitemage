@@ -5,7 +5,7 @@ positions_file = "positions.txt"
 server_port = 2001                      # port for motor control server
 logger_interval = 1.0                   # interval for updating IDS data to logger
 
-timeout_move = 600.0 # seconds          # timeout for motors to reach their targets [NYI]
+timeout_move = 600.0 # seconds          # timeout for motors to reach their targets
 
 # if a setting not specified, falls back to the defaults given in blackmage
 [precision]                             # precision correction settings
@@ -59,7 +59,7 @@ doublepass = true                       # do a second correction pass?
 
 [devices.3]
     mc  = "192.168.2.3"
-    ids = "192.168.3.3"
+    ids = "192.168.3.4"
     
     master = 1
     ess = [15e-6,15e-6,15e-6]

@@ -18,19 +18,20 @@ function main(; config="config.toml")
         ids_port=ctrl.config.devices_general[:ids_port],
          timeout=ctrl.config.devices_general[:timeout_connect])
     
-    applySettings!(md,ctrl.cfg)
-    confirmPositions!(md,ctrl)
+    # applySettings!(md,ctrl.cfg)
+    # confirmPositions!(md,ctrl)
 
     # addMockLog_(md)
 
-    initMD!(md)
+    # initMD!(md)
       
-    startLogger!(md; interval=ctrl.config.logger_interval)
-    startTargeter!(md,ctrl)
+    # startLogger!(md; interval=ctrl.config.logger_interval)
+    # startTargeter!(md,ctrl)
 
-    server = serve(; host="127.0.0.1",port=ctrl.config.server_port,async=true)
+    # server = serve(; host="127.0.0.1",port=ctrl.config.server_port,async=true)
 
-    return md, ctrl, server
+    # return md, ctrl, server
+    return md, ctrl
 end
 
 function initMD!(md::MultiDevice; rezero::Bool=false)

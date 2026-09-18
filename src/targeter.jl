@@ -25,7 +25,7 @@ function runTargeter(md::MultiDevice,ctrl::Controller)
     return
 end
 
-function stopTargeter!(md::MultiDevice)
+function stopTargeter!(md::MultiDevice,ctrl::Controller)
     @info "Stopping logger."
     
     ctrl.targeter = false
