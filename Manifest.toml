@@ -19,7 +19,7 @@ version = "0.1.10"
 
 [[deps.Blackmage]]
 deps = ["Dates", "JSON", "Sockets"]
-git-tree-sha1 = "6aa20bb722cd456e8a13f65214f051621b7022ee"
+git-tree-sha1 = "5d56d260de20613bd9af6c38384b68fac1a730eb"
 repo-rev = "main"
 repo-url = "https://github.com/bergermann/Blackmage"
 uuid = "94fbf62c-7f84-4dac-b8e8-d17b7072c94a"

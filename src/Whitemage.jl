@@ -9,11 +9,11 @@ include("logger.jl")
 include("server.jl")
 
 function main(; config="config.toml")
-    @assert Threads.nthreads >= 4 "At least 4 threads required for operation."
+    @assert Threads.nthreads() >= 4 "At least 4 threads required for operation."
     # main + logger + targeter + server
 
     ctrl::Controller = Controller(config)
-    md::MultiDevice = MultiDevice(getIPs(ctrl.cfg,:mc),getIPs(ctrl.cfg,:ids);
+    md::MultiDevice = MultiDevice(getIPs(ctrl.config,:mc),getIPs(ctrl.config,:ids);
          mc_port=ctrl.config.devices_general[:mc_port],
         ids_port=ctrl.config.devices_general[:ids_port],
          timeout=ctrl.config.devices_general[:timeout_connect])
