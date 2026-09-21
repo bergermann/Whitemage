@@ -1,11 +1,10 @@
 
 using Whitemage, Blackmage
 
-md, ctrl = Whitemage.main(; config="config_test.toml")
+ctrl, s = Whitemage.main(; config="config_test.toml")
 
-close(md)
+close(ctrl.md); close(s)
 
 
 
-getMeasurementEnabled(md)
 

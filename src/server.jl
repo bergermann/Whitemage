@@ -16,77 +16,81 @@ end
 
 
 
-@get "/rpos/{i}" function(req::HTTP.Request,i::Int)
-    return json(md.logger.rpos[i])
+@get "/rpos/{i}" function(req::HTTP.Request,i::Int; context::Controller)
+    ctrl = context
+    @lock ctrl.md.logger json(ctrl.md.logger[].rpos[i])
 end
 
 
 
-@get "/interrupt" function(req::HTTP.Request)
-    interrupt[] = true
+@get "/interrupt" function(req::HTTP.Request; context::Controller)
+    ctrl = context
+    ctrl.md.interrupt[] = true
 
     return "Interrupting."
 end
 
 
 
-@get "/load_config/{config}" function(req::HTTP.Request,config::String)
+# @get "/load_config/{config}" function(req::HTTP.Request,config::String)
     
 
-    return "Loading config $config."
-end
+#     return "Loading config $config."
+# end
 
 
 
-@get "/goto/{i}" function(req::HTTP.Request,i::Int)
-    setNewTarget!(target,positions,i)
-    
-    newtarget[] = true
+@get "/goto/{i}" function(req::HTTP.Request,i::Int; context::Controller)
+    ctrl = context
+
+    setNewTarget!(ctrl,i)
+    ctrl.newtarget = true
 
     return "Going to position $i."
 end
 
-@get "/goto_i/{i}" function(req::HTTP.Request,i::Int)
-    setNewTarget!(target,positions,i)
-    
-    newtarget[] = true; interrupt[] = true
+@get "/goto_i/{i}" function(req::HTTP.Request,i::Int; context::Controller)
+    ctrl = context
+
+    setNewTarget!(ctrl,i)
+    ctrl.newtarget = true; ctrl.interrupt = true
 
     return "Going to position $i, forcing interrupt."
 end
 
 
 
-@get "/gonext" function(req::HTTP.Request)
-    @assert 0 <= idx[] "No valid positions loaded."
-
-    newtarget[] = true
+@get "/gonext" function(req::HTTP.Request; context::Controller)
+    ctrl = context; @assert 0 <= ctrl.idx "No valid positions loaded."
     
     # if idx[] == size(positions,2); @info "Reached end, going back to start"; end
-    idx[] = idx[]%size(position,2)+1
-    setNewTarget!(target,positions,idx[])
+    ctrl.idx = ctrl.idx%size(ctrl.positions,2)+1
+    setNewTarget!(ctrl,ctrl.idx)
+
+    ctrl.newtarget = true
 
     return "Going to next position: $i."
 end
 
-@get "/gonext_i" function(req::HTTP.Request)
-    @assert 0 <= idx[] "No valid positions loaded."
+@get "/gonext_i" function(req::HTTP.Request; context::Controller)
+    ctrl = context; @assert 0 <= ctrl.idx "No valid positions loaded."
     
     # if idx[] == size(positions,2); @info "Reached end, going back to start"; end
-    idx[] = idx[]%size(position,2)+1
-    setNewTarget!(target,positions,idx[])
+    ctrl.idx = ctrl.idx%size(ctrl.positions,2)+1
+    setNewTarget!(ctrl,ctrl.idx)
 
-    newtarget[] = true; interrupt[] = true
+    ctrl.newtarget = true; ctrl.interrupt = true
 
     return "Going to next position: $i. Forcing interrupt"
 end
 
 
 
-function setNewTarget!(target::Vector{Float64},positions::Matrix{Float64},idx_::Int)
-    @assert 0 <= idx[] "No valid positions loaded."
-    @assert 0 < idx_ < size(positions,2) "Position index ouf of bounds."
+function setNewTarget!(ctrl::Controller,idx_::Int)
+    @assert 0 <= ctrl.idx "No valid positions loaded."
+    @assert 0 < idx_ < size(ctrl.positions,2) "Position index ouf of bounds."
 
-    idx[] = idx_; target .= positions[idx]
+    ctrl.idx = idx_; copyto!(ctrl.target,ctrl.positions[idx])
 
     return
 end

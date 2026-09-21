@@ -1,7 +1,7 @@
 
 
 function startLogger!(md::MultiDevice; interval::Real=1.)
-    md.logger.active = true
+    md.logger.value.active = true
 
     @info "Starting logger."
     
@@ -18,10 +18,12 @@ function startLogger!(md::MultiDevice; interval::Real=1.)
     return
 end
 
+startLogger!(ctrl::Controller; interval::Real=1.) = startLogger!(ctrl.md; interval=interval)
+
 function runLogger!(md::MultiDevice,interval::Real=1.)
     @info "Running logger."
 
-    while md.logger.active
+    while md.logger.value.active
         updateLog_(md); sleep(interval)
     end
 
@@ -33,7 +35,7 @@ end
 function stopLogger!(md::MultiDevice)
     @info "Stopping logger."
     
-    md.logger.active = false
+    md.logger.value.active = false
 
     return
 end

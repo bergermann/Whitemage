@@ -61,12 +61,19 @@ mutable struct Controller
     target::Vector{Float64}
 
     targeter::Bool
-    new_target::Bool
+    newtarget::Bool
+
+    md::MultiDevice
 
     function Controller(config::String)
         config = Config(config)
         
-        idx, positions = loadPositions(config.positions_file)
+        _, positions = loadPositions(config.positions_file)
+
+        md = MultiDevice(getIPs(config,:mc),getIPs(config,:ids);
+             mc_port=config.devices_general[:mc_port],
+            ids_port=config.devices_general[:ids_port],
+             timeout=config.devices_general[:timeout_connect])
 
         new(
             config,
@@ -77,6 +84,8 @@ mutable struct Controller
 
             false,
             false,
+
+            md
         )
     end
 end
@@ -97,21 +106,21 @@ function loadPositions(file)
     end
 end
 
-function loadPositions!(md::MultiDevice,ctrl::Controller,file::String=ctrl.config.positions_file)
+function loadPositions!(ctrl::Controller,file::String=ctrl.config.positions_file)
     ctrl.config.positions_file = file
 
     ctrl.idx, ctrl.positions = loadPositions(file)
 
-    confirmPositions!(md,ctrl)
+    confirmPositions!(ctrl)
 
     return
 end
 
-function confirmPositions!(md::MultiDevice,ctrl::Controller)
-    if length(ctrl.target) != length(md); ctrl.target = zeros(Float64,length(md)); end
+function confirmPositions!(ctrl::Controller)
+    if length(ctrl.target) != length(ctrl.md); ctrl.target = zeros(Float64,length(ctrl.md)); end
 
     if ctrl.idx >= 0
-        if size(ctrl.positions,1) != length(md)
+        if size(ctrl.positions,1) != length(ctrl.md)
             @info "Loaded positions don't match number of discs. Discarding positions."
             
             ctrl.idx = -1; ctrl.positions = zeros(0,0)
@@ -138,7 +147,7 @@ function applySettings!(md::MultiDevice,cfg::Config)
     return
 end
 
-applySettings!(md::MultiDevice,ctrl::Controller) = applySettings!(md,ctrl.config)
+applySettings!(ctrl::Controller) = applySettings!(ctrl.md,ctrl.config)
 
 function applyPrecisionSettings!(md::MultiDevice,cfg::Config)
     if haskey(cfg.precision,:doprecision)
@@ -228,11 +237,11 @@ end
 # end
 
 # updateConfig!(ctrl::Controller) = updateConfig!(ctrl.config)
-updateConfig!(ctrl::Controller,config::String) = setfield!(ctrl,:config,Config(config)) 
+updateConfig_!(ctrl::Controller,config::String) = setfield!(ctrl,:config,Config(config)) 
 
-function updateConfig!(md::MultiDevice,ctrl::Controller,config::String)
-    updateConfig!(ctrl,config)
-    applySettings!(md,ctrl)
+function updateConfig!(ctrl::Controller,config::String)
+    updateConfig_!(ctrl,config)
+    applySettings!(ctrl)
 
     return
 end
