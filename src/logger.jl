@@ -6,7 +6,8 @@ function startLogger!(md::MultiDevice; interval::Real=1.)
     @info "Starting logger."
     
     if Blackmage.getMeasurementEnabled(md)
-        updateLog_(md); sleep(interval)
+        # updateLog_(md); sleep(interval)
+        updateLog!(md); sleep(interval)
 
         Threads.@spawn begin
             runLogger!(md,interval)
@@ -24,7 +25,8 @@ function runLogger!(md::MultiDevice,interval::Real=1.)
     @info "Running logger."
 
     while md.logger.value.active
-        updateLog_(md); sleep(interval)
+        # updateLog_(md); sleep(interval)
+        updateLog!(md); sleep(interval)
     end
 
     @info "Stopped logger."

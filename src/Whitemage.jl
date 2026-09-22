@@ -6,6 +6,7 @@ using Oxygen, HTTP, JSON, TOML, Blackmage, DelimitedFiles
 include("controller.jl")
 include("logger.jl")
 include("targeter.jl")
+include("init.jl")
 
 
 
@@ -18,7 +19,7 @@ function main(; config="config.toml")
     applySettings!(ctrl)
     confirmPositions!(ctrl)
 
-    addMockLog_(ctrl.md)
+    # addMockLog_(ctrl.md)
 
     # initMD!(ctrl; rezero=ctrl.config.rezero)
       
@@ -31,20 +32,5 @@ function main(; config="config.toml")
 
     return ctrl, server
 end
-
-function initMD!(md::MultiDevice; rezero::Bool=false)
-    if !getMeasurementEnabled(md)
-        startMeasurement(md)
-    end
-
-    # if rezero
-    #     mcZero(md)
-    #     resetAxes(md)
-    # end
-
-    return
-end
-
-initMD!(ctrl::Controller; rezero::Bool=false) = initMD!(ctrl.md; rezero=rezero)
 
 end # module Whitemage

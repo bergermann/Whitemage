@@ -13,12 +13,16 @@ function runTargeter(ctrl::Controller)
     while ctrl.targeter
         if ctrl.newtarget
             ctrl.newtarget = false
+            ctrl.md.interrupt[] = false
             
             mcTarget(ctrl.md,target)
             mcWait(ctrl.md); sleep(1)
-            mcTargetP(ctrl.md); sleep(1)
-            
-            ctrl.md.interrupt[] = false
+
+            if ctrl.md.settings.doprecision
+                mcTargetP(ctrl.md); sleep(1)
+            end
+
+            validateTarget!(ctrl.md)
         end
     end
 
@@ -29,6 +33,12 @@ function stopTargeter!(ctrl::Controller)
     @info "Stopping logger."
     
     ctrl.targeter = false
+
+    return
+end
+
+function validateTarget!(md::MultiDevice)
+    md.target[] = false
 
     return
 end

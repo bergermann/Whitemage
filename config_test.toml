@@ -5,7 +5,7 @@ positions_file = "positions.txt"
 server_port = 2001                      # port for motor control server
 logger_interval = 1.0                   # interval for updating IDS data to logger
 
-timeout_move = 600.0 # seconds          # timeout for motors to reach their targets
+timeout_move = 600.0 # seconds          # timeout for motors to reach their targets [NYI]
 rezero = false                          # wether to rezero devices on boot. use with care
 
 # if a setting not specified, falls back to the defaults given in blackmage
@@ -38,3 +38,30 @@ doublepass = true                       # do a second correction pass?
     r = 0.15 # meters                   # distance of interferometer mirrors from disc center
                                         # used for tilt calculations 
 
+[devices.1] # individual disc settings
+    mc  = "192.168.2.1"                 # ip address of motor control
+    ids = "192.168.3.1"                 # ip address of interferometer
+    
+    master = 1                          # master axis (this could also be set globally if uniform)
+    ess = [15e-6,15e-6,15e-6] # m       # estimated size of single motor step for corrections
+    alpha = 0.0 # degrees               # angle of axis 1 wrt global reference plane
+                                        # this depends on the rail frame construction
+                                        # and will have to be measured and set individually
+                                        # this is necessary for calculating disc tilts with
+                                        # to a common reference
+
+[devices.2]
+    mc  = "192.168.2.2"
+    ids = "192.168.3.2"
+    
+    master = 1
+    ess = [15e-6,15e-6,15e-6]
+    alpha = 0.0
+
+[devices.3]
+    mc  = "192.168.2.3"
+    ids = "192.168.3.4"
+    
+    master = 1
+    ess = [15e-6,15e-6,15e-6]
+    alpha = 0.0
