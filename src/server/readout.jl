@@ -38,5 +38,5 @@ end
 @get "/target" function(req::HTTP.Request; context::Controller)
     ctrl = context
 
-    return json(ctrl.md.target[])
+    return json(ctrl.md.target[][])
 end
