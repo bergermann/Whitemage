@@ -18,10 +18,10 @@ function runTargeter(ctrl::Controller)
 
             ctrl.newtarget = false
             ctrl.md.interrupt[] = false
-            
-            mcTarget(ctrl.md,target)
-            mcWait(ctrl.md); sleep(1)
 
+            mcTarget(ctrl.md,ctrl.target)
+            mcWait(ctrl.md); sleep(1)
+            
             if ctrl.md.settings.doprecision
                 mcTargetP(ctrl.md); sleep(1)
             end
