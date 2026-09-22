@@ -11,7 +11,7 @@ include("init.jl")
 
 
 function main(; config="config.toml")
-    @assert Threads.nthreads() >= 4 "At least 4 threads required for operation."
+    @assert Threads.nthreads(:default) >= 4 "At least 4 threads required for operation."
     # main + logger + targeter + server
 
     ctrl = Controller(config)
@@ -21,10 +21,12 @@ function main(; config="config.toml")
 
     # addMockLog_(ctrl.md)
 
-    # initMD!(ctrl; rezero=ctrl.config.rezero)
+    initMD!(ctrl; rezero=ctrl.config.rezero)
       
     startLogger!(ctrl; interval=ctrl.config.logger_interval)
-    # startTargeter!(ctrl)
+    startTargeter!(ctrl)
+
+    @info "Got here on thread $(Threads.threadid())."
 
     include("src/server/server.jl")
 

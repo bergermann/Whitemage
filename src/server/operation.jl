@@ -61,7 +61,7 @@ function setNewTarget!(ctrl::Controller,idx_::Int)
     @assert 0 <= ctrl.idx "No valid positions loaded."
     @assert 0 < idx_ < size(ctrl.positions,2) "Position index ouf of bounds."
 
-    ctrl.idx = idx_; copyto!(ctrl.target,ctrl.positions[idx])
+    ctrl.idx = idx_; copyto!(ctrl.target,ctrl.positions[idx_])
 
     return
 end

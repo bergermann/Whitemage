@@ -10,8 +10,12 @@ function startTargeter!(ctrl::Controller)
 end
 
 function runTargeter(ctrl::Controller)
+    @info "Running targeter on thread $(Threads.threadid())."
+
     while ctrl.targeter
         if ctrl.newtarget
+            @info "Moving to new target."
+
             ctrl.newtarget = false
             ctrl.md.interrupt[] = false
             
@@ -23,7 +27,7 @@ function runTargeter(ctrl::Controller)
             end
 
             validateTarget!(ctrl.md)
-        end
+        end; sleep(1)
     end
 
     return

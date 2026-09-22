@@ -22,7 +22,7 @@ end
 startLogger!(ctrl::Controller; interval::Real=1.) = startLogger!(ctrl.md; interval=interval)
 
 function runLogger!(md::MultiDevice,interval::Real=1.)
-    @info "Running logger."
+    @info "Running logger on thread $(Threads.threadid())."
 
     while md.logger.value.active
         # updateLog_(md); sleep(interval)
@@ -41,3 +41,5 @@ function stopLogger!(md::MultiDevice)
 
     return
 end
+
+stopLogger!(ctrl::Controller) = stopLogger!(ctrl.md)

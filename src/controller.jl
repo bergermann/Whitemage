@@ -68,7 +68,7 @@ mutable struct Controller
     function Controller(config::String)
         config = Config(config)
         
-        _, positions = loadPositions(config.positions_file)
+        idx, positions = loadPositions(config.positions_file)
 
         md = MultiDevice(getIPs(config,:mc),getIPs(config,:ids);
              mc_port=config.devices_general[:mc_port],
@@ -78,8 +78,8 @@ mutable struct Controller
         new(
             config,
 
-            -1,
-            zeros(Float64,0,0),
+            idx,
+            positions,
             zeros(Float64,size(positions,1)),
 
             false,
