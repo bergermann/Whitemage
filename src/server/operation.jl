@@ -1,26 +1,5 @@
 
 
-@get "/ping" function(req::HTTP.Request)
-    return "pong"
-end
-
-@get "/test" function(req::HTTP.Request)
-    return [1]
-end
-
-@get "/echo" function(req::HTTP.Request)
-    display(req.body)
-
-    return "echo"
-end
-
-
-
-@get "/rpos/{i}" function(req::HTTP.Request,i::Int; context::Controller)
-    ctrl = context
-    @lock ctrl.md.logger json(ctrl.md.logger[].rpos[i])
-end
-
 
 
 @get "/interrupt" function(req::HTTP.Request; context::Controller)
@@ -29,14 +8,6 @@ end
 
     return "Interrupting."
 end
-
-
-
-# @get "/load_config/{config}" function(req::HTTP.Request,config::String)
-    
-
-#     return "Loading config $config."
-# end
 
 
 

@@ -4,8 +4,8 @@ module Whitemage
 using Oxygen, HTTP, JSON, TOML, Blackmage, DelimitedFiles
 
 include("controller.jl")
-
 include("logger.jl")
+include("targeter.jl")
 
 
 
@@ -25,7 +25,7 @@ function main(; config="config.toml")
     startLogger!(ctrl; interval=ctrl.config.logger_interval)
     # startTargeter!(ctrl)
 
-    include("src/server.jl")
+    include("src/server/server.jl")
 
     server = serve(; host="127.0.0.1",port=ctrl.config.server_port,async=true,context=ctrl)
 
