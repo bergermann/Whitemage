@@ -35,6 +35,13 @@ end
 
 
 
+@get "/time" function(req::HTTP.Request; context::Controller)
+    ctrl = context
+    @lock ctrl.md.logger json(ctrl.md.logger[].timestamp)
+end
+
+
+
 @get "/target" function(req::HTTP.Request; context::Controller)
     ctrl = context
 
