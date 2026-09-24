@@ -27,7 +27,7 @@ function runTargeter(ctrl::Controller)
             end
 
             validateTarget!(ctrl.md)
-        end; sleep(1)
+        end; sleep(0.1)
     end
 
     return

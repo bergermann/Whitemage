@@ -12,3 +12,11 @@ end
 
     return "echo"
 end
+
+
+
+@get "/info" function(req::HTTP.Request; context::Controller)
+    ctrl = context
+
+    return json(length(ctrl.md))
+end
