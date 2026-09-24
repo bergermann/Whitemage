@@ -40,6 +40,10 @@ end
     @lock ctrl.md.logger json(ctrl.md.logger[].timestamp)
 end
 
+@get "/context" function(req::HTTP.Request; context::Controller)
+    ctrl = context
+    @lock ctrl.md.logger json(UInt8(ctrl.md.logger[].context))
+end
 
 
 @get "/target" function(req::HTTP.Request; context::Controller)
