@@ -30,7 +30,8 @@ function main(; config="config.toml")
 
     include("src/server/server.jl")
 
-    server = serve(; host="127.0.0.1",port=ctrl.config.server_port,async=true,context=ctrl)
+    server = serve(; host="127.0.0.1",port=ctrl.config.server_port,async=true,context=ctrl,
+        metrics=false)
 
     return ctrl, server
 end

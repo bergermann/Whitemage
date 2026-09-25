@@ -11,19 +11,19 @@ end
 
 
 
-@get "/goto/{i}" function(req::HTTP.Request,i::Int; context::Controller)
+@get "/goto/{idx}" function(req::HTTP.Request,idx::Int; context::Controller)
     ctrl = context
 
-    setNewTarget!(ctrl,i)
+    setNewTarget!(ctrl,idx)
     ctrl.newtarget = true
 
     return "Going to position $i."
 end
 
-@get "/goto_i/{i}" function(req::HTTP.Request,i::Int; context::Controller)
+@get "/goto_i/{idx}" function(req::HTTP.Request,idx::Int; context::Controller)
     ctrl = context
 
-    setNewTarget!(ctrl,i)
+    setNewTarget!(ctrl,idx)
     ctrl.newtarget = true; ctrl.md.interrupt[] = true
 
     return "Going to position $i, forcing interrupt."
@@ -57,9 +57,14 @@ end
 
 function setNewTarget!(ctrl::Controller,idx::Int)
     @assert 0 <= ctrl.idx "No valid positions loaded."
-    @assert 0 < idx <= size(ctrl.positions,2) "Position index ouf of bounds."
+    @assert 0 <= idx <= size(ctrl.positions,2) "Position index ouf of bounds."
 
-    ctrl.idx = idx; copyto!(ctrl.target,ctrl.positions[:,idx])
+    ctrl.idx = idx
+    if idx == 0
+        ctrl.target .= 0. 
+    else
+        copyto!(ctrl.target,ctrl.positions[:,idx])
+    end
 
     return
 end
