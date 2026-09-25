@@ -19,8 +19,6 @@ function main(; config="config.toml")
     applySettings!(ctrl)
     confirmPositions!(ctrl)
 
-    # addMockLog_(ctrl.md)
-
     initMD!(ctrl; rezero=ctrl.config.rezero)
       
     startLogger!(ctrl; interval=ctrl.config.logger_interval)
